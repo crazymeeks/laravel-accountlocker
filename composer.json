@@ -1,0 +1,20 @@
+{
+    "name": "crazymeeks/accountlocker",
+    "description": "A laravel package for lock and unlock user account when reached the max login attempt",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["laravel"],
+    "authors": [
+        {
+            "name": "jclaud",
+            "email": "jeffclaud17@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Crazymeeks\\AccountLocker\\": "src/"
+        }
+    }
+}
