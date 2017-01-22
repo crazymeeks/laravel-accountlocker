@@ -167,6 +167,16 @@ class AccountLocker{
 		return $this->_execute(__FUNCTION__);
 	}
 
+	/**
+	 * Reset the status of the user
+	 *
+	 * @param mixed           This can be an instance of Illuminate\Http\Request or user's email
+	 * @return void
+	 */
+	public function reset($request){
+		$this->unlock($request);
+	}
+
 
 	/**
 	 * Get the email in the request
