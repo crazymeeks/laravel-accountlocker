@@ -125,10 +125,25 @@ class AccountLocker{
 		}else{
 			$this->email = $request;
 		}
+
+		return $this->checkUserStatus($status);
+	}
+
+	/**
+	 * Check the status of the user
+	 * 
+	 * @param string $status
+	 * @return
+	 */
+	protected function checkUserStatus($status){
 		$user = $this->user->where('email', $this->email)->first();
 
 		if(count($user) > 0){
 			if($status == 'locked' && (string)$user->{config('accountlocker.status_field_name')} == '2'){
+				if(strtotime($user->{config('accountlocker.locktime_fields')[1]}) < strtotime(date('Y-m-d H:i:s'))){
+					$this->unlock($this->email);
+					return false;
+				}
 				return true;
 			}elseif($status == 'active' && (string)$user->{config('accountlocker.status_field_name')} == '1'){
 				return true;
@@ -138,7 +153,7 @@ class AccountLocker{
 				return true;
 			}
 		}
-		return false;
+		return false;	
 	}
 
 	/**
