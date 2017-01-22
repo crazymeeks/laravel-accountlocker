@@ -3,7 +3,7 @@
     "description": "A laravel package for lock and unlock user account when reached the max login attempt",
     "type": "library",
     "license": "MIT",
-    "keywords": ["laravel"],
+    "keywords": ["laravel", "Laravel account locker"],
     "authors": [
         {
             "name": "jclaud",
