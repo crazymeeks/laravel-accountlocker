@@ -83,8 +83,11 @@ class AccountLocker{
 			if(!in_array($this->lockeby, config('accountlocker.canlockedby'))){
 				$user->{config('accountlocker.locktime_fields')[0]} = is_null($action) ? $startTime : 0;
 				$user->{(config('accountlocker.locktime_fields')[1])} = is_null($action) ? date('Y-m-d H:i:s',strtotime(config('accountlocker.locked_duration'),strtotime($startTime))) : 0;
+			}else{
+				$user->{config('accountlocker.locktime_fields')[0]} =  0;
+				$user->{(config('accountlocker.locktime_fields')[1])} =  0;
 			}
-			
+
 			$user->{config('accountlocker.login_attempts_field')} = is_null($action) ? 3 : 0;
 			if(!$user->save()){
 				throw new \Crazymeeks\AccountLocker\Exceptions\CannotLockUserException('Error locking the user. Please try again');
