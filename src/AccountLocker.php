@@ -15,6 +15,13 @@ class AccountLocker{
 
 	protected $email = null;
 
+	/**
+	 * Indicates wheather the account has been locked by
+	 * admin or any authorized user
+	 * @var
+	 */
+	protected $lockeby = null;
+
 	public function __construct(User $user){
 		$this->user = $user;
 	}
@@ -23,11 +30,12 @@ class AccountLocker{
 	/**
 	 * Lock the account
 	 *
-	 * @param mixed           This can be an instance of Illuminate\Http\Request or user's email
+	 * @param mixed                    This can be an instance of Illuminate\Http\Request or user's email
+	 * @param string $canlockedby      Authorized person who can lock the user account
 	 * @return mixed
 	 */
-	public function lock($request){
-
+	public function lock($request, $canlockeby = null){
+		$this->lockeby = $lockeby;
 		$this->checkRequirements($request);
 		return $this->_execute();
 	}
@@ -71,8 +79,12 @@ class AccountLocker{
 			// lock the user
 			$startTime = date('Y-m-d H:i:s');
 			$user->{config('accountlocker.status_field_name')} = is_null($action) ? 2 : 1;
-			$user->{config('accountlocker.locktime_fields')[0]} = is_null($action) ? $startTime : 0;
-			$user->{(config('accountlocker.locktime_fields')[1])} = is_null($action) ? date('Y-m-d H:i:s',strtotime(config('accountlocker.locked_duration'),strtotime($startTime))) : 0;
+
+			if(!in_array($this->lockeby, config('accountlocker.canlockedby'))){
+				$user->{config('accountlocker.locktime_fields')[0]} = is_null($action) ? $startTime : 0;
+				$user->{(config('accountlocker.locktime_fields')[1])} = is_null($action) ? date('Y-m-d H:i:s',strtotime(config('accountlocker.locked_duration'),strtotime($startTime))) : 0;
+			}
+			
 			$user->{config('accountlocker.login_attempts_field')} = is_null($action) ? 3 : 0;
 			if(!$user->save()){
 				throw new \Crazymeeks\AccountLocker\Exceptions\CannotLockUserException('Error locking the user. Please try again');
@@ -133,13 +145,19 @@ class AccountLocker{
 	 * Check the status of the user
 	 * 
 	 * @param string $status
-	 * @return
+	 * @return bool
 	 */
 	protected function checkUserStatus($status){
 		$user = $this->user->where('email', $this->email)->first();
 
 		if(count($user) > 0){
 			if($status == 'locked' && (string)$user->{config('accountlocker.status_field_name')} == '2'){
+
+				// check if account has been locked by authorize person
+				if($user->{config('accountlocker.locktime_fields')[0]} == '0' && $user->{config('accountlocker.locktime_fields')[1]} == '0'){
+					return true;
+				}
+
 				if(strtotime($user->{config('accountlocker.locktime_fields')[1]}) < strtotime(date('Y-m-d H:i:s'))){
 					$this->unlock($this->email);
 					return false;

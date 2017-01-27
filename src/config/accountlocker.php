@@ -64,6 +64,12 @@ return [
 	 */
 	'locked_duration' => '+1 hour', // +30 minutes
 
+	/**
+	 * User who can lock the account
+	 * @var array
+	 */
+	'canlockedby' => ['superadmin'],
+
 	'lock_message' => 'User has been locked',
 
 	'unlock_message' => 'User has been unlocked',
