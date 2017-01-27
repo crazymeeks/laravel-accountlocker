@@ -35,7 +35,7 @@ class AccountLocker{
 	 * @return mixed
 	 */
 	public function lock($request, $canlockeby = null){
-		$this->lockeby = $lockeby;
+		$this->lockeby = $canlockeby;
 		$this->checkRequirements($request);
 		return $this->_execute();
 	}
