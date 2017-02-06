@@ -59,11 +59,11 @@ class AccountLocker{
 		}
 
 		if(!in_array(config('accountlocker.status_field_name'), $this->user->getFillable())){
-			throw new \Crazymeeks\AccountLocker\Exceptions\FieldNotFoundException('The ' . config('accountlocker.status_field_name') . ' not found in the \'users\' table');
+			throw new \Crazymeeks\AccountLocker\Exceptions\FieldNotFoundException('The ' . config('accountlocker.status_field_name') . ' not found in the \'users\' table or in fillable array of User model');
 		}
 
 		if(!in_array(config('accountlocker.login_attempts_field'), $this->user->getFillable())){
-			throw new \Crazymeeks\AccountLocker\Exceptions\FieldNotFoundException('The ' . config('accountlocker.login_attempts_field') . ' not found in the \'users\' table');
+			throw new \Crazymeeks\AccountLocker\Exceptions\FieldNotFoundException('The ' . config('accountlocker.login_attempts_field') . ' not found in the \'users\' table or in fillable array of User model');
 		}
 	}
 
